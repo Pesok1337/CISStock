@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Host
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            using (var host = new ServiceHost(typeof(C.Service1)))
+            {
+                host.Open();
+                Console.WriteLine("Host started.");
+                Console.ReadLine();
+            }
+        }
+    }
+}
