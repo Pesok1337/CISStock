@@ -161,26 +161,26 @@
     <Reference Include="Npgsql.EntityFrameworkCore.PostgreSQL, Version=3.1.18.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.EntityFrameworkCore.PostgreSQL.3.1.18\lib\netstandard2.0\Npgsql.EntityFrameworkCore.PostgreSQL.dll</HintPath>
     </Reference>
-    <Reference Include="Stl, Version=6.7.40.24454, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stl.6.7.40\lib\netstandard2.0\Stl.dll</HintPath>
+    <Reference Include="Stl, Version=6.8.1.32759, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stl.6.8.1\lib\netstandard2.0\Stl.dll</HintPath>
     </Reference>
-    <Reference Include="Stl.CommandR, Version=6.7.40.24454, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stl.CommandR.6.7.40\lib\netstandard2.0\Stl.CommandR.dll</HintPath>
+    <Reference Include="Stl.CommandR, Version=6.8.1.32759, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stl.CommandR.6.8.1\lib\netstandard2.0\Stl.CommandR.dll</HintPath>
     </Reference>
-    <Reference Include="Stl.Fusion, Version=6.7.40.24454, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stl.Fusion.6.7.40\lib\netstandard2.0\Stl.Fusion.dll</HintPath>
+    <Reference Include="Stl.Fusion, Version=6.8.1.32759, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stl.Fusion.6.8.1\lib\netstandard2.0\Stl.Fusion.dll</HintPath>
     </Reference>
-    <Reference Include="Stl.Fusion.EntityFramework, Version=6.7.40.24454, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stl.Fusion.EntityFramework.6.7.40\lib\netstandard2.0\Stl.Fusion.EntityFramework.dll</HintPath>
+    <Reference Include="Stl.Fusion.EntityFramework, Version=6.8.1.32759, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stl.Fusion.EntityFramework.6.8.1\lib\netstandard2.0\Stl.Fusion.EntityFramework.dll</HintPath>
     </Reference>
-    <Reference Include="Stl.Fusion.EntityFramework.Npgsql, Version=6.7.40.24454, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stl.Fusion.EntityFramework.Npgsql.6.7.40\lib\netstandard2.0\Stl.Fusion.EntityFramework.Npgsql.dll</HintPath>
+    <Reference Include="Stl.Fusion.EntityFramework.Npgsql, Version=6.8.1.32759, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stl.Fusion.EntityFramework.Npgsql.6.8.1\lib\netstandard2.0\Stl.Fusion.EntityFramework.Npgsql.dll</HintPath>
     </Reference>
-    <Reference Include="Stl.Interception, Version=6.7.40.24454, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stl.Interception.6.7.40\lib\netstandard2.0\Stl.Interception.dll</HintPath>
+    <Reference Include="Stl.Interception, Version=6.8.1.32759, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stl.Interception.6.8.1\lib\netstandard2.0\Stl.Interception.dll</HintPath>
     </Reference>
-    <Reference Include="Stl.Rpc, Version=6.7.40.24454, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
-      <HintPath>..\packages\Stl.Rpc.6.7.40\lib\netstandard2.0\Stl.Rpc.dll</HintPath>
+    <Reference Include="Stl.Rpc, Version=6.8.1.32759, Culture=neutral, PublicKeyToken=7c239217ec78b545, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stl.Rpc.6.8.1\lib\netstandard2.0\Stl.Rpc.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -194,6 +194,7 @@
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -225,7 +226,6 @@
     </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.0\lib\net462\System.Runtime.dll</HintPath>
-      <Private>True</Private>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -268,6 +268,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -282,6 +283,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationContext.cs" />
+    <Compile Include="ConsignmentNote.cs" />
     <Compile Include="IService1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service1.cs" />

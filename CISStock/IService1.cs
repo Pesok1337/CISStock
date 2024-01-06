@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using static CISStock.ConsignmentNote;
 
 namespace CISStock
 {
@@ -11,38 +12,109 @@ namespace CISStock
     [ServiceContract]
     public interface IService1
     {
-        [OperationContract]
-        string GetData(int value);
 
         [OperationContract]
-        CompositeType GetDataUsingDataContract(CompositeType composite);
+        bool AuthenticateUser(string username, string password);
 
         [OperationContract]
-        string GetTest();
+        bool RegisterUser(string username, string password, string firstName, string lastName, string role);
+
+        [OperationContract]
+        List<Invoice> GetInvoices();
+
+        [OperationContract]
+        bool SaveInvoice(Invoice invoice);
+
+        [OperationContract]
+        List<Supplier> GetSuppliers();
+
+        [OperationContract]
+        bool SaveSupplier(SupplierDto supplierDto);
+
+        [OperationContract]
+        bool SaveCustomer(CustomerDto сustomerDto);
+
+        //[OperationContract]
+        //Invoice GetInvoiceById(int invoiceId);
+
+        //[OperationContract]
+        //string GetSupplierById(int supplierId);
+
+        [OperationContract]
+        List<DisplayInvoice> GetDisplayInvoices();
+
+        [OperationContract]
+        InvoiceDTO GetInvoiceDTOById(int invoiceId);
 
         // TODO: Добавьте здесь операции служб
     }
-
-    // Используйте контракт данных, как показано в примере ниже, чтобы добавить составные типы к операциям служб.
-    // В проект можно добавлять XSD-файлы. После построения проекта вы можете напрямую использовать в нем определенные типы данных с пространством имен "CISStock.ContractType".
     [DataContract]
-    public class CompositeType
+    public class SupplierDto
     {
-        bool boolValue = true;
-        string stringValue = "Hello ";
+        [DataMember]
+        public int SupplierId { get; set; }
 
         [DataMember]
-        public bool BoolValue
-        {
-            get { return boolValue; }
-            set { boolValue = value; }
-        }
+        public string SupplierName { get; set; }
+    }
+    [DataContract]
+    public class CustomerDto
+    {
+        [DataMember]
+        public int CustomerId { get; set; }
 
         [DataMember]
-        public string StringValue
+        public string CustomerName { get; set; }
+    }
+    [DataContract]
+    public class DisplayInvoice
+    {
+        [DataMember]
+        public int InvoiceId { get; set; }
+        [DataMember]
+        public DateTime InvoiceDate { get; set; }
+        [DataMember]
+        public string SupplierName { get; set; }
+
+        public DisplayInvoice() { } 
+
+        public DisplayInvoice(int invoiceId, DateTime invoiceDate, string supplierName)
         {
-            get { return stringValue; }
-            set { stringValue = value; }
+            InvoiceId = invoiceId;
+            InvoiceDate = invoiceDate;
+            SupplierName = supplierName;
         }
     }
+    [DataContract]
+    public class InvoiceDTO
+    {
+        [DataMember]
+        public int InvoiceId { get; set; }
+
+        [DataMember]
+        public DateTime InvoiceDate { get; set; }
+
+        [DataMember]
+        public int SupplierId { get; set; }
+
+        [DataMember]
+        public string SupplierName { get; set; }
+
+        [DataMember]
+        public List<ProductDTO> Products { get; set; }
+    }
+
+    [DataContract]
+    public class ProductDTO
+    {
+        [DataMember]
+        public int ProductId { get; set; }
+
+        [DataMember]
+        public string ProductName { get; set; }
+
+        [DataMember]
+        public int Quantity { get; set; }
+    }
+
 }

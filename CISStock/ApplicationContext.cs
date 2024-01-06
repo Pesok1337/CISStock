@@ -1,131 +1,92 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using static CISStock.ConsignmentNote;
 
 namespace CISStock
 {
     internal class ApplicationContext : DbContext
     {
-        public DbSet<Users> users { get; set; } = null;
-        public DbSet<UserRoles> userRoles { get; set; } = null;
-        public DbSet<Roles> roles { get; set; } = null;
-        public DbSet<Stock> stock { get; set; } = null;
-        public DbSet<Products> products { get; set; } = null;
-        public DbSet<PurchaseOrders> purchaseOrders { get; set; } = null;
-        public DbSet<PurchaseOrderDetails> purchaseOrderDetails { get; set; } = null;
-        public DbSet<Sales> sales { get; set; } = null;
-        public DbSet<Suppliers> suppliers { get; set; } = null;
+        public DbSet<User> Users { get; set; } = null;
+        public DbSet<Role> Roles { get; set; } = null;
+        public DbSet<Invoice> Invoices { get; set; } = null;
+        public DbSet<Supplier> Suppliers { get; set; } = null;
+        public DbSet<Customer> Customers { get; set; } = null;
+        public DbSet<Product> Products { get; set; } = null;
+
 
         public ApplicationContext()
         {
             //Database.EnsureDeleted();
             Database.EnsureCreated();
         }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseNpgsql("Host=localhost; port=5432; Database=Stock; UserName=postgres; Password=admin");
-            //base.OnConfiguring(optionsBuilder);
         }
 
-        [Table("Users")]
-        public class Users
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            [Column("UserID")]
+            User admin = new User();
+            admin.UserID = 1;
+            admin.FirstName = "Илья";
+            admin.Password = "admin";
+            admin.UserName = "admin";
+            
+            Role roleAdmin = new Role();
+            Role roleUser = new Role();
+            roleAdmin.RoleID = 1;
+            roleAdmin.RoleName = "admin";
+            roleUser.RoleID = 2;
+            roleUser.RoleName = "user";
+            admin.RoleId = 1;
+
+            modelBuilder.Entity<User>().HasData(admin);
+            modelBuilder.Entity<Role>().HasData(roleAdmin);
+            modelBuilder.Entity<Role>().HasData(roleUser);
+
+
+        }
+
+        [Table("users")] // Пользователи
+        public class User
+        {
             [Key]
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+            [Column("user_id")]
+            public int UserID { get; set; }
+
+            [Column("username")]
             public string UserName { get; set; }
+
+            [Column("password")]
             public string Password { get; set; }
+
+            [Column("first_name")]
             public string FirstName { get; set; }
+
+            [Column("last_name")]
             public string LastName { get; set; }
-            public string Email { get; set; }
-        }
-        [Table("UserRoles")]
-        public class UserRoles
-        {
-            [Column("UserRolesID")]
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            List<Users> Users { get; set; } = new List<Users>();
-            List<Roles> Roles { get; set; } = new List<Roles>();
-        }
-        [Table("Roles")]
-        public class Roles
-        {
-            [Column("RolesID")]
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            public string RoleName { get; set; }
-            public string Description { get; set; }
-        }
-        [Table("Stock")]
-        public class Stock
-        {
-            [Column("StockID")]
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            List<Products> Products { get; set; } = new List<Products>();
-            public int QuantityOnHand { get; set; }
-            public DateTime LastPurchaseDate { get; set; }
-        }
-        [Table("Sales")]
-        public class Sales
-        {
-            [Column("SaleID")]
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            List<Products> ProductID { get; set; } = new List<Products>();
-            public DateTime SaleDate { get; set; }
-            public int QuantitySold { get; set; }
-            public decimal UnitPrice { get; set; }
+
+            [ForeignKey("role")]
+            public int RoleId { get; set; }
+            public virtual Role Role { get; set; }
 
         }
-        [Table("Products")]
-        public class Products
+
+        [Table("roles")] // Роли
+        public class Role
         {
-            [Column("ProductID")]
             [Key]
             [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            public string ProductName { get; set; }
-            public string Description { get; set; }
-        }
-        [Table("Suppliers")]
-        public class Suppliers
-        {
-            [Column("SupplierID")]
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            public string SupplierName { get; set; }
-            public string ContactPerson { get; set; }
-            // Другие свойства
-        }
-        [Table("PurchaseOrders")]
-        public class PurchaseOrders
-        {
-            [Column("PurchaseOrderID")]
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            List<Suppliers> SupplierID { get; set; } = new List<Suppliers>();
-            public DateTime OrderDate { get; set; }
-            // Другие свойства
-        }
-        [Table("PurchaseOrderDetails")]
-        public class PurchaseOrderDetails
-        {
-            [Column("PurchaseOrderDetailID")]
-            [Key]
-            [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-            List<PurchaseOrders> PurchaseOrderID { get; set; } = new List<PurchaseOrders>();
-            List<Products> ProductID { get; set; }
-            public int Quantity { get; set; }
-            public decimal UnitPrice { get; set; }
-            // Другие свойства
+            [Column("role_id")]
+            public int RoleID { get; set; }
+
+            [Column("rolename")]
+            public string RoleName { get; set; }
         }
     }
 }
