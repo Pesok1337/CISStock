@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/CISStock" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/CISStock" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfConsignmentNote.Invoice">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ConsignmentNote.Invoice" nillable="true" type="tns:ConsignmentNote.Invoice" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfConsignmentNote.Invoice" nillable="true" type="tns:ArrayOfConsignmentNote.Invoice" />
+  <xs:complexType name="ConsignmentNote.Invoice">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="InvoiceDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="InvoiceId" type="xs:int" />
+      <xs:element minOccurs="0" name="Products" nillable="true" type="tns:ArrayOfConsignmentNote.Product" />
+      <xs:element minOccurs="0" name="Supplier" nillable="true" type="tns:ConsignmentNote.Supplier" />
+      <xs:element minOccurs="0" name="SupplierId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConsignmentNote.Invoice" nillable="true" type="tns:ConsignmentNote.Invoice" />
+  <xs:complexType name="ArrayOfConsignmentNote.Product">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ConsignmentNote.Product" nillable="true" type="tns:ConsignmentNote.Product" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfConsignmentNote.Product" nillable="true" type="tns:ArrayOfConsignmentNote.Product" />
+  <xs:complexType name="ConsignmentNote.Product">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Invoice" nillable="true" type="tns:ConsignmentNote.Invoice" />
+      <xs:element minOccurs="0" name="InvoiceId" nillable="true" type="xs:int" />
+      <xs:element minOccurs="0" name="ProductId" type="xs:int" />
+      <xs:element minOccurs="0" name="ProductName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quantity" type="xs:int" />
+      <xs:element minOccurs="0" name="Sale" nillable="true" type="tns:ConsignmentNote.Sale" />
+      <xs:element minOccurs="0" name="SaleId" nillable="true" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConsignmentNote.Product" nillable="true" type="tns:ConsignmentNote.Product" />
+  <xs:complexType name="ConsignmentNote.Sale">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Customer" nillable="true" type="tns:ConsignmentNote.Customer" />
+      <xs:element minOccurs="0" name="CustomerId" type="xs:int" />
+      <xs:element minOccurs="0" name="Products" nillable="true" type="tns:ArrayOfConsignmentNote.Product" />
+      <xs:element minOccurs="0" name="SaleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SaleId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConsignmentNote.Sale" nillable="true" type="tns:ConsignmentNote.Sale" />
+  <xs:complexType name="ConsignmentNote.Customer">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CustomerId" type="xs:int" />
+      <xs:element minOccurs="0" name="CustomerName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConsignmentNote.Customer" nillable="true" type="tns:ConsignmentNote.Customer" />
+  <xs:complexType name="ConsignmentNote.Supplier">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Invoices" nillable="true" type="tns:ArrayOfConsignmentNote.Invoice" />
+      <xs:element minOccurs="0" name="SupplierId" type="xs:int" />
+      <xs:element minOccurs="0" name="SupplierName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConsignmentNote.Supplier" nillable="true" type="tns:ConsignmentNote.Supplier" />
+  <xs:complexType name="InvoiceDTO">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="InvoiceDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="InvoiceId" type="xs:int" />
+      <xs:element minOccurs="0" name="Products" nillable="true" type="tns:ArrayOfProductDTO" />
+      <xs:element minOccurs="0" name="SupplierId" type="xs:int" />
+      <xs:element minOccurs="0" name="SupplierName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="InvoiceDTO" nillable="true" type="tns:InvoiceDTO" />
+  <xs:complexType name="ArrayOfProductDTO">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ProductDTO" nillable="true" type="tns:ProductDTO" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfProductDTO" nillable="true" type="tns:ArrayOfProductDTO" />
+  <xs:complexType name="ProductDTO">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ProductId" type="xs:int" />
+      <xs:element minOccurs="0" name="ProductName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quantity" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ProductDTO" nillable="true" type="tns:ProductDTO" />
+  <xs:complexType name="ArrayOfConsignmentNote.Sale">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ConsignmentNote.Sale" nillable="true" type="tns:ConsignmentNote.Sale" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfConsignmentNote.Sale" nillable="true" type="tns:ArrayOfConsignmentNote.Sale" />
+  <xs:complexType name="SaleDTO">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CustomerId" type="xs:int" />
+      <xs:element minOccurs="0" name="CustomerName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Products" nillable="true" type="tns:ArrayOfProductDTO" />
+      <xs:element minOccurs="0" name="SaleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SaleId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SaleDTO" nillable="true" type="tns:SaleDTO" />
+  <xs:complexType name="ArrayOfConsignmentNote.Supplier">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ConsignmentNote.Supplier" nillable="true" type="tns:ConsignmentNote.Supplier" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfConsignmentNote.Supplier" nillable="true" type="tns:ArrayOfConsignmentNote.Supplier" />
+  <xs:complexType name="SupplierDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="SupplierId" type="xs:int" />
+      <xs:element minOccurs="0" name="SupplierName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SupplierDto" nillable="true" type="tns:SupplierDto" />
+  <xs:complexType name="CustomerDto">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CustomerId" type="xs:int" />
+      <xs:element minOccurs="0" name="CustomerName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="CustomerDto" nillable="true" type="tns:CustomerDto" />
+  <xs:complexType name="ArrayOfConsignmentNote.Customer">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ConsignmentNote.Customer" nillable="true" type="tns:ConsignmentNote.Customer" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfConsignmentNote.Customer" nillable="true" type="tns:ArrayOfConsignmentNote.Customer" />
+  <xs:complexType name="ArrayOfDisplayInvoice">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DisplayInvoice" nillable="true" type="tns:DisplayInvoice" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDisplayInvoice" nillable="true" type="tns:ArrayOfDisplayInvoice" />
+  <xs:complexType name="DisplayInvoice">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="InvoiceDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="InvoiceId" type="xs:int" />
+      <xs:element minOccurs="0" name="SupplierName" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DisplayInvoice" nillable="true" type="tns:DisplayInvoice" />
+  <xs:complexType name="ArrayOfDisplaySale">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="DisplaySale" nillable="true" type="tns:DisplaySale" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfDisplaySale" nillable="true" type="tns:ArrayOfDisplaySale" />
+  <xs:complexType name="DisplaySale">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="CustomerName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="SaleDate" type="xs:dateTime" />
+      <xs:element minOccurs="0" name="SaleId" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="DisplaySale" nillable="true" type="tns:DisplaySale" />
+  <xs:complexType name="ArrayOfConsignmentNote.ProductOnStock">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ConsignmentNote.ProductOnStock" nillable="true" type="tns:ConsignmentNote.ProductOnStock" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfConsignmentNote.ProductOnStock" nillable="true" type="tns:ArrayOfConsignmentNote.ProductOnStock" />
+  <xs:complexType name="ConsignmentNote.ProductOnStock">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ProductOnStockId" type="xs:int" />
+      <xs:element minOccurs="0" name="ProductOnStockName" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="Quantity" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ConsignmentNote.ProductOnStock" nillable="true" type="tns:ConsignmentNote.ProductOnStock" />
+</xs:schema>

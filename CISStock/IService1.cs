@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
@@ -23,7 +24,28 @@ namespace CISStock
         List<Invoice> GetInvoices();
 
         [OperationContract]
-        bool SaveInvoice(Invoice invoice);
+        bool DeleteSupplier(Supplier Supplier);
+        //[OperationContract]
+        //bool SaveInvoice(Invoice invoice);
+
+        //[OperationContract]
+        //bool UpdateInvoice(Invoice updatedInvoice);
+
+        [OperationContract]
+        bool SaveInvoiceDTO(InvoiceDTO invoiceDTO);
+        [OperationContract]
+        List<Sale> GetSales();
+
+        [OperationContract]
+        bool UpdateSaleDTO(SaleDTO updatedSaleDTO);
+        [OperationContract]
+        bool SaveSaleDTO(SaleDTO SaleDTO);
+
+        [OperationContract]
+        bool UpdateInvoiceDTO(InvoiceDTO updatedInvoiceDTO);
+
+        //[OperationContract]
+        //bool CheckInvoice(int InvoiceId);
 
         [OperationContract]
         List<Supplier> GetSuppliers();
@@ -33,6 +55,9 @@ namespace CISStock
 
         [OperationContract]
         bool SaveCustomer(CustomerDto сustomerDto);
+
+        [OperationContract]
+        List<Customer> GetCustomers();
 
         //[OperationContract]
         //Invoice GetInvoiceById(int invoiceId);
@@ -45,6 +70,21 @@ namespace CISStock
 
         [OperationContract]
         InvoiceDTO GetInvoiceDTOById(int invoiceId);
+
+        [OperationContract]
+        List<DisplaySale> GetDisplaySales();
+
+        [OperationContract]
+        SaleDTO GetSaleDTOById(int saleId);
+
+        [OperationContract]
+        bool AddOrUpdateProductOnStock(ProductDTO productDTO);
+
+        [OperationContract]
+        bool RemoveProductFromStock(string productOnStockName, int quantity);
+
+        [OperationContract]
+        List<ProductOnStock> GetProductsOnStock();
 
         // TODO: Добавьте здесь операции служб
     }
@@ -112,6 +152,57 @@ namespace CISStock
 
         [DataMember]
         public string ProductName { get; set; }
+
+        [DataMember]
+        public int Quantity { get; set; }
+    }
+
+    [DataContract]
+    public class DisplaySale
+    {
+        [DataMember]
+        public int SaleId { get; set; }
+        [DataMember]
+        public DateTime SaleDate { get; set; }
+        [DataMember]
+        public string CustomerName { get; set; }
+
+        public DisplaySale() { }
+
+        public DisplaySale(int saleId, DateTime saleDate, string customerName)
+        {
+            SaleId = saleId;
+            SaleDate = saleDate;
+            CustomerName = customerName;
+        }
+    }
+    [DataContract]
+    public class SaleDTO
+    {
+        [DataMember]
+        public int SaleId { get; set; }
+
+        [DataMember]
+        public DateTime SaleDate { get; set; }
+
+        [DataMember]
+        public int CustomerId { get; set; }
+
+        [DataMember]
+        public string CustomerName { get; set; }
+
+        [DataMember]
+        public List<ProductDTO> Products { get; set; }
+    }
+
+    [DataContract]
+    public class ProductOnStockDTO
+    {
+        [DataMember]
+        public int ProductOnStockId { get; set; }
+
+        [DataMember]
+        public string ProductOnStockName { get; set; }
 
         [DataMember]
         public int Quantity { get; set; }

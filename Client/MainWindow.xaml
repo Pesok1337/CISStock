@@ -1,0 +1,110 @@
+﻿<Window x:Class="Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Склад" Height="500" Width="800">
+    <Grid>
+        <Frame x:Name="mainFrame"/>
+        <Menu>
+            <MenuItem Header="Продажи">
+                <MenuItem Header="Продажи" Click="SalesMenuItem_Click"/>
+                <MenuItem Header="Клиенты" Click="CustomersMenuItem_Click"/>
+            </MenuItem>
+            <MenuItem Header="Склад">
+                <MenuItem Header="Товарные накладные" Click="InvoicesMenuItem_Click"/>
+                <MenuItem Header="Товары на складе" Click="ProductsOnStockMenuItem_Click"/>
+                <MenuItem Header="Контрагенты" Click="ContractorsMenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+
+        <TabControl x:Name="mainTabControl" Grid.Row="1">
+            <!-- Вкладка "Склад" -->
+            <TabItem Header="Склад">
+                <TabControl x:Name="stockTabControl">
+                    <TabItem Header="Товарные накладные">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                                <Button Content="Создать" Click="CreateInvoice_Click" Width="80" Height="20" Margin="5"/>
+                                <Button Content="Обновить" Click="UpdateInvoice_Click" Width="80" Height="20" Margin="5"/>
+                                <Button Content="Удалить" Click="DeleteInvoice_Click" Width="80" Height="20" Margin="5"/>
+                            </StackPanel>
+                            <DataGrid x:Name="invoicesDataGrid" IsReadOnly="True" MouseDoubleClick="DataGridInvoice_MouseDoubleClick" AutoGenerateColumns="False" Margin="0,10,0,0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding InvoiceId}" />
+                                    <DataGridTextColumn Header="Дата" Binding="{Binding InvoiceDate}" />
+                                    <DataGridTextColumn Header="Поставщик" Binding="{Binding SupplierName}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                        
+                    </TabItem>
+                    <TabItem Header="Товары на складе">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                                <Button Content="Обновить" Click="UpdateProductOnStock_Click" Width="80" Height="20" Margin="5"/>
+                            </StackPanel>
+                            <DataGrid x:Name="productOnStockDataGrid" IsReadOnly="True" AutoGenerateColumns="False" Margin="0,10,0,0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding ProductOnStockId}" />
+                                    <DataGridTextColumn Header="Товар" Binding="{Binding ProductOnStockName}" />
+                                    <DataGridTextColumn Header="Количество" Binding="{Binding Quantity}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                        
+                    </TabItem>
+                    <TabItem Header="Контрагенты">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                                <Button Content="Создать" Click="CreateSupplier_Click" Width="80" Height="20" Margin="5"/>
+                                <Button Content="Обновить" Click="UpdateSupplier_Click" Width="80" Height="20" Margin="5"/>
+                                <Button Content="Удалить" Click="DeleteSupplier_Click" Width="80" Height="20" Margin="5"/>
+                            </StackPanel>
+                            <DataGrid x:Name="suppliersDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Margin="0,10,0,0">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding SupplierId}" />
+                                    <DataGridTextColumn Header="Название поставщика" Binding="{Binding SupplierName}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </StackPanel>
+                    </TabItem>
+                </TabControl>
+            </TabItem>
+            <!-- Вкладка "Продажи" -->
+            <TabItem Header="Продажи">
+                <TabControl x:Name="SalesTabControl">
+                        <TabItem Header="Продажи">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                                    <Button Content="Создать" Click="CreateSale_Click" Width="80" Height="20" Margin="5"/>
+                                <Button Content="Обновить" Click="UpdateSale_Click" Width="80" Height="20" Margin="5"/>
+                                <Button Content="Удалить" Click="DeleteSale_Click" Width="80" Height="20" Margin="5"/>
+                                </StackPanel>
+                                <DataGrid x:Name="salesDataGrid" IsReadOnly="True" MouseDoubleClick="DataGridSale_MouseDoubleClick" AutoGenerateColumns="False" Margin="0,10,0,0">
+                                    <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Binding="{Binding SaleId}" />
+                                    <DataGridTextColumn Header="Дата" Binding="{Binding SaleDate}" />
+                                        <DataGridTextColumn Header="Клиент" Binding="{Binding CustomerName}"></DataGridTextColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </TabItem>
+                        <TabItem Header="Клиенты">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="2">
+                                    <Button Content="Создать" Click="CreateCustomer_Click" Width="80" Height="20" Margin="5"/>
+                                    <Button Content="Обновить" Click="UpdateCustomer_Click" Width="80" Height="20" Margin="5"/>
+                                    <Button Content="Удалить" Click="DeleteCustomers_Click" Width="80" Height="20" Margin="5"/>
+                                </StackPanel>
+                                <DataGrid x:Name="CustomersDataGrid" AutoGenerateColumns="False" IsReadOnly="True" Margin="0,10,0,0">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="ID" Binding="{Binding CustomerId}" />
+                                        <DataGridTextColumn Header="Имя клиента" Binding="{Binding CustomerName}" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </StackPanel>
+                        </TabItem>
+                    </TabControl>
+                </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

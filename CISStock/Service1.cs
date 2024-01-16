@@ -65,6 +65,32 @@ namespace CISStock
                 return true; // Регистрация успешна
             }
         }
+        public bool DeleteSupplier(Supplier Supplier)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    var supplier = context.Suppliers.Find(Supplier.SupplierId);
+
+                    if (supplier == null)
+                    {
+                        return false;
+                    }
+
+                    context.Suppliers.Remove(supplier);
+
+                    context.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
 
         public List<Invoice> GetInvoices()
         {
@@ -87,16 +113,182 @@ namespace CISStock
                 return displayInvoices;
             }
         }
-        public bool SaveInvoice(Invoice invoice)
+
+        //public bool SaveInvoiceDTO(InvoiceDTO invoiceDTO)
+        //{
+        //    try
+        //    {
+        //        using (var context = new ApplicationContext())
+        //        {
+        //            // Преобразуем InvoiceDTO обратно в Invoice
+        //            var invoice = MapToEntity(invoiceDTO);
+
+        //            // При необходимости выполните другие действия (например, добавление поставщиков, товаров)
+        //            context.Invoices.Add(invoice);
+        //            context.SaveChanges();
+        //            return true; // В случае успешного сохранения
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Обработка ошибок, например, запись в лог или возврат false
+        //        Console.WriteLine(ex.Message);
+        //        if (ex.InnerException != null)
+        //        {
+        //            Console.WriteLine("Inner Exception:");
+        //            Console.WriteLine(ex.InnerException.Message);
+        //        }
+        //        return false;
+        //    }
+        //}
+        private void SaveProducts(IEnumerable<Product> products, ApplicationContext context)
+        {
+            foreach (var product in products)
+            {
+                // Проверяем, что товар не связан ни с накладной, ни с продажей
+                if (product.Invoice == null && product.Sale == null)
+                {
+                    context.Products.Add(product);
+                    // Устанавливаем связь с накладной или продажей
+                    if (product.InvoiceId.HasValue)
+                    {
+                        product.Invoice = context.Invoices.Find(product.InvoiceId);
+                    }
+                    else if (product.SaleId.HasValue)
+                    {
+                        product.Sale = context.Sales.Find(product.SaleId);
+                    }
+                }
+            }
+
+            // Сохраняем изменения в товарах
+            context.SaveChanges();
+        }
+
+
+        public bool SaveInvoiceDTO(InvoiceDTO invoiceDTO)
         {
             try
             {
                 using (var context = new ApplicationContext())
                 {
-                    // При необходимости выполните другие действия (например, добавление поставщиков, товаров)
+                    // Преобразуем InvoiceDTO обратно в Invoice
+                    var invoice = MapToEntity(invoiceDTO);
+
+                    // Устанавливаем связь для каждого продукта
+                    foreach (var product in invoice.Products)
+                    {
+                        product.Invoice = invoice;
+                    }
+
+                    // Сохраняем товары
+                    SaveProducts(invoice.Products, context);
+
+                    foreach (var product in invoiceDTO.Products)
+                    {
+                        AddOrUpdateProductOnStock(product);
+                    }
+
+                    // Добавляем накладную
                     context.Invoices.Add(invoice);
                     context.SaveChanges();
+
                     return true; // В случае успешного сохранения
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                Console.WriteLine(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception:");
+                    Console.WriteLine(ex.InnerException.Message);
+                }
+                return false;
+            }
+        }
+
+
+        public bool SaveSaleDTO(SaleDTO saleDTO)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    // Преобразуем SaleDTO обратно в Sale
+                    var sale = MapToEntity(saleDTO);
+
+                    foreach (var product in sale.Products)
+                    {
+                        product.Sale = sale;
+                    }
+
+                    // Сохраняем товары
+                    SaveProducts(sale.Products, context);
+                    foreach (var product in saleDTO.Products)
+                    {
+                        RemoveProductFromStock(product.ProductName, product.Quantity);
+                    }
+                    // Добавляем продажу
+                    context.Sales.Add(sale);
+                    context.SaveChanges();
+
+                    return true; // В случае успешного сохранения
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                Console.WriteLine(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception:");
+                    Console.WriteLine(ex.InnerException.Message);
+                }
+                return false;
+            }
+        }
+
+
+
+        public bool UpdateInvoiceDTO(InvoiceDTO updatedInvoiceDTO)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    // Преобразуем UpdatedInvoiceDTO обратно в Invoice
+                    var updatedInvoice = MapToEntity(updatedInvoiceDTO);
+
+                    // Получаем существующую накладную из базы данных
+                    var existingInvoice = context.Invoices
+                        .Include(i => i.Products)
+                        .SingleOrDefault(i => i.InvoiceId == updatedInvoice.InvoiceId);
+
+                    if (existingInvoice == null)
+                    {
+                        // Накладная не найдена, можно выполнить какие-то дополнительные действия или вернуть false
+                        return false;
+                    }
+
+                    // Обновляем свойства существующей накладной
+                    existingInvoice.InvoiceDate = updatedInvoice.InvoiceDate;
+                    existingInvoice.SupplierId = updatedInvoice.SupplierId;
+
+                    // Удаляем текущие товары у существующей накладной
+                    context.Products.RemoveRange(existingInvoice.Products);
+
+                    // Добавляем новые товары из обновленной накладной
+                    foreach (var product in updatedInvoice.Products)
+                    {
+                        existingInvoice.Products.Add(product);
+                    }
+
+                    // Сохраняем изменения
+                    context.SaveChanges();
+
+                    return true; // В случае успешного обновления
                 }
             }
             catch (Exception ex)
@@ -112,6 +304,264 @@ namespace CISStock
             }
         }
 
+        public InvoiceDTO GetInvoiceDTOById(int invoiceId)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    Invoice invoice = context.Invoices
+                        .Include(i => i.Supplier)
+                        .Include(i => i.Products)
+                        .SingleOrDefault(i => i.InvoiceId == invoiceId);
+
+                    if (invoice == null)
+                    {
+                        // Накладная с указанным идентификатором не найдена
+                        Console.WriteLine($"Invoice with ID {invoiceId} not found.");
+                        return null;
+                    }
+
+                    // Преобразование в DTO для передачи через WCF
+                    return MapToDTO(invoice);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, например, запись в лог или возврат null
+                Console.WriteLine($"Error while fetching invoice: {ex.Message}");
+                return null;
+            }
+        }
+        public InvoiceDTO MapToDTO(Invoice invoice)
+        {
+            return new InvoiceDTO
+            {
+                InvoiceId = invoice.InvoiceId,
+                InvoiceDate = invoice.InvoiceDate,
+                SupplierId = invoice.SupplierId,
+                SupplierName = invoice.Supplier.SupplierName,
+                Products = invoice.Products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Quantity = p.Quantity
+                }).ToList()
+            };
+        }
+        public Invoice MapToEntity(InvoiceDTO invoiceDTO)
+        {
+            // Создаем новый объект Invoice и заполняем его данными из InvoiceDTO
+            var invoice = new Invoice
+            {
+                InvoiceId = invoiceDTO.InvoiceId,
+                InvoiceDate = invoiceDTO.InvoiceDate,
+                SupplierId = invoiceDTO.SupplierId,
+                // Преобразуем ProductDTO в Product и добавляем их к накладной
+                Products = invoiceDTO.Products.Select(productDTO => new Product
+                {
+                    ProductId = productDTO.ProductId,
+                    ProductName = productDTO.ProductName,
+                    Quantity = productDTO.Quantity,
+                    InvoiceId = invoiceDTO.InvoiceId
+                }).ToList()
+            };
+
+            return invoice;
+        }
+
+        //
+        public List<Sale> GetSales()
+        {
+            using (var context = new ApplicationContext())
+            {
+                // Загрузить все накладные из базы данных
+                List<Sale> sales = context.Sales.ToList();
+                return sales;
+            }
+        }
+        public List<DisplaySale> GetDisplaySales()
+        {
+            using (var context = new ApplicationContext())
+            {
+                var displaySales = context.Sales
+                    .Include(i => i.Customer) // Убедитесь, что Supplier загружен
+                    .Select(i => new DisplaySale(i.SaleId, i.SaleDate, i.Customer != null ? i.Customer.CustomerName : ""))
+                    .ToList();
+
+                return displaySales;
+            }
+        }
+
+        //public bool SaveSaleDTO(SaleDTO saleDTO)
+        //{
+        //    try
+        //    {
+        //        using (var context = new ApplicationContext())
+        //        {
+        //            // Преобразуем saleDTO обратно в sale
+        //            var sale = MapToEntity(saleDTO);
+
+        //            // При необходимости выполните другие действия (например, добавление поставщиков, товаров)
+        //            context.Sales.Add(sale);
+        //            context.SaveChanges();
+        //            return true; // В случае успешного сохранения
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Обработка ошибок, например, запись в лог или возврат false
+        //        Console.WriteLine(ex.Message);
+        //        if (ex.InnerException != null)
+        //        {
+        //            Console.WriteLine("Inner Exception:");
+        //            Console.WriteLine(ex.InnerException.Message);
+        //        }
+        //        return false;
+        //    }
+        //}
+        
+
+        public bool UpdateSaleDTO(SaleDTO updatedSaleDTO)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    // Преобразуем UpdatedInvoiceDTO обратно в Invoice
+                    var updatedSale = MapToEntity(updatedSaleDTO);
+
+                    // Получаем существующую накладную из базы данных
+                    var existingSale = context.Sales
+                        .Include(i => i.Products)
+                        .SingleOrDefault(i => i.SaleId == updatedSale.SaleId);
+
+                    if (existingSale == null)
+                    {
+                        // Накладная не найдена, можно выполнить какие-то дополнительные действия или вернуть false
+                        return false;
+                    }
+
+                    // Обновляем свойства существующей накладной
+                    existingSale.SaleDate = updatedSale.SaleDate;
+                    existingSale.CustomerId = updatedSale.CustomerId;
+
+                    // Удаляем текущие товары у существующей накладной
+                    context.Products.RemoveRange(existingSale.Products);
+
+                    // Добавляем новые товары из обновленной накладной
+                    foreach (var product in updatedSale.Products)
+                    {
+                        existingSale.Products.Add(product);
+                    }
+
+                    // Сохраняем изменения
+                    context.SaveChanges();
+
+                    return true; // В случае успешного обновления
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, например, запись в лог или возврат false
+                Console.WriteLine(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine("Inner Exception:");
+                    Console.WriteLine(ex.InnerException.Message);
+                }
+                return false;
+            }
+        }
+        //
+        public SaleDTO GetSaleDTOById(int saleId)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    Sale sale = context.Sales
+                        .Include(i => i.Customer)
+                        .Include(i => i.Products)
+                        .SingleOrDefault(i => i.SaleId == saleId);
+
+                    if (sale == null)
+                    {
+                        // Накладная с указанным идентификатором не найдена
+                        Console.WriteLine($"Sale with ID {saleId} not found.");
+                        return null;
+                    }
+
+                    // Преобразование в DTO для передачи через WCF
+                    return MapToDTO(sale);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок, например, запись в лог или возврат null
+                Console.WriteLine($"Error while fetching invoice: {ex.Message}");
+                return null;
+            }
+        }
+        public SaleDTO MapToDTO(Sale sale)
+        {
+            return new SaleDTO
+            {
+                SaleId = sale.SaleId,
+                SaleDate = sale.SaleDate,
+                CustomerId = sale.CustomerId,
+                CustomerName = sale.Customer.CustomerName,
+                Products = sale.Products.Select(p => new ProductDTO
+                {
+                    ProductId = p.ProductId,
+                    ProductName = p.ProductName,
+                    Quantity = p.Quantity
+                }).ToList()
+            };
+        }
+        //public Sale MapToEntity(SaleDTO saleDTO)
+        //{
+        //    // Создаем новый объект sale и заполняем его данными из saleDTO
+        //    var sale = new Sale
+        //    {
+        //        SaleId = saleDTO.SaleId,
+        //        SaleDate = saleDTO.SaleDate,
+        //        CustomerId = saleDTO.CustomerId,
+        //        // Преобразуем ProductDTO в Product и добавляем их к накладной
+        //        Products = saleDTO.Products.Select(productDTO => new Product
+        //        {
+        //            ProductId = productDTO.ProductId,
+        //            ProductName = productDTO.ProductName,
+        //            Quantity = productDTO.Quantity
+        //        }).ToList()
+        //    };
+
+        //    return sale;
+        //}
+        public Sale MapToEntity(SaleDTO saleDTO)
+        {
+            // Создаем новый объект sale и заполняем его данными из saleDTO
+            var sale = new Sale
+            {
+                SaleId = saleDTO.SaleId,
+                SaleDate = saleDTO.SaleDate,
+                CustomerId = saleDTO.CustomerId,
+                // Преобразуем ProductDTO в Product и добавляем их к накладной
+                Products = saleDTO.Products.Select(productDTO =>
+                {
+                    var product = new Product
+                    {
+                        ProductId = productDTO.ProductId,
+                        ProductName = productDTO.ProductName,
+                        Quantity = productDTO.Quantity,
+                        SaleId = saleDTO.SaleId  // Установите SaleId для связи
+                    };
+                    return product;
+                }).ToList()
+            };
+
+            return sale;
+        }
         public List<Supplier> GetSuppliers()
         {
             using (var context = new ApplicationContext())
@@ -159,81 +609,6 @@ namespace CISStock
                 return false;
             }
         }
-
-        //public Invoice GetInvoiceById(int invoiceId)
-        //{
-        //    using (var context = new ApplicationContext())
-        //    {
-        //        try
-        //        {
-        //            // Загрузка накладной с учетом связанных данных
-        //            Invoice invoice = context.Invoices
-        //                .Include(i => i.Supplier)
-        //                .Include(i => i.InvoiceDate)
-        //                .Include(i => i.Products)
-        //                .SingleOrDefault(i => i.InvoiceId == invoiceId);
-
-        //            if (invoice == null)
-        //            {
-        //                // Накладная с указанным идентификатором не найдена
-        //                Console.WriteLine($"Invoice with ID {invoiceId} not found.");
-        //            }
-
-        //            return invoice;
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            // Обработка ошибок, например, запись в лог или возврат null
-        //            Console.WriteLine($"Error while fetching invoice: {ex.Message}");
-        //            return null;
-        //        }
-        //    }
-        //}
-        public InvoiceDTO GetInvoiceDTOById(int invoiceId)
-        {
-            try
-            {
-                using (var context = new ApplicationContext())
-                {
-                    Invoice invoice = context.Invoices
-                        .Include(i => i.Supplier)
-                        .Include(i => i.Products)
-                        .SingleOrDefault(i => i.InvoiceId == invoiceId);
-
-                    if (invoice == null)
-                    {
-                        // Накладная с указанным идентификатором не найдена
-                        Console.WriteLine($"Invoice with ID {invoiceId} not found.");
-                        return null;
-                    }
-
-                    // Преобразование в DTO для передачи через WCF
-                    return MapToDTO(invoice);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Обработка ошибок, например, запись в лог или возврат null
-                Console.WriteLine($"Error while fetching invoice: {ex.Message}");
-                return null;
-            }
-        }
-        public InvoiceDTO MapToDTO(Invoice invoice)
-        {
-            return new InvoiceDTO
-            {
-                InvoiceId = invoice.InvoiceId,
-                InvoiceDate = invoice.InvoiceDate,
-                SupplierId = invoice.SupplierId,
-                SupplierName = invoice.Supplier.SupplierName,
-                Products = invoice.Products.Select(p => new ProductDTO
-                {
-                    ProductId = p.ProductId,
-                    ProductName = p.ProductName,
-                    Quantity = p.Quantity
-                }).ToList()
-            };
-        }
         public bool SaveCustomer(CustomerDto customerDto)
         {
             try
@@ -272,7 +647,93 @@ namespace CISStock
                 return false;
             }
         }
+        public List<Customer> GetCustomers()
+        {
+            using (var context = new ApplicationContext())
+            {
+                List<Customer> customers = context.Customers.ToList();
+                return customers;
+            }
+        }
 
+        public bool AddOrUpdateProductOnStock(ProductDTO productDTO)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    var productOnStock = context.ProductOnStocks.SingleOrDefault(p => p.ProductOnStockName == productDTO.ProductName);
+
+                    if (productOnStock == null)
+                    {
+                        // Если товар не существует, добавляем его в таблицу
+                        productOnStock = new ProductOnStock
+                        {
+                            ProductOnStockName = productDTO.ProductName,
+                            Quantity = productDTO.Quantity
+                        };
+                        context.ProductOnStocks.Add(productOnStock);
+                    }
+                    else
+                    {
+                        // Если товар уже существует, увеличиваем его количество
+                        productOnStock.Quantity += productDTO.Quantity;
+                    }
+
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+
+        public bool RemoveProductFromStock(string productOnStockName, int quantity)
+        {
+            try
+            {
+                using (var context = new ApplicationContext())
+                {
+                    var productOnStock = context.ProductOnStocks.SingleOrDefault(p => p.ProductOnStockName == productOnStockName);
+
+                    if (productOnStock == null || productOnStock.Quantity < quantity)
+                    {
+                        // Если товара не существует или его количество меньше запрашиваемого, возвращаем ошибку
+                        return false;
+                    }
+
+                    // Уменьшаем количество товара
+                    productOnStock.Quantity -= quantity;
+                    context.SaveChanges();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Обработка ошибок
+                Console.WriteLine(ex.Message);
+                return false;
+            }
+        }
+        public List<ProductOnStock> GetProductsOnStock()
+        {
+            using (var context = new ApplicationContext())
+            {
+                //// Возвращаем все товары на складе
+                //return context.ProductOnStocks.Select(p => new ProductOnStockDTO
+                //{
+                //    ProductOnStockId = p.ProductOnStockId,
+                //    ProductOnStockName = p.ProductOnStockName,
+                //    Quantity = p.Quantity
+                //}).ToList();
+                List<ProductOnStock> productOnStockDTO = context.ProductOnStocks.ToList();
+                return productOnStockDTO;
+            }
+        }
 
     }
 }

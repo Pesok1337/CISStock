@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientTest", "ClientTest\Cl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{4BA144C1-3149-47A0-BAAE-E8FD68F59EBE}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Stock", "Stock\Stock.vdproj", "{607B7264-1DE8-4A02-8393-4D94DEBD43D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,8 @@ Global
 		{4BA144C1-3149-47A0-BAAE-E8FD68F59EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BA144C1-3149-47A0-BAAE-E8FD68F59EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4BA144C1-3149-47A0-BAAE-E8FD68F59EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{607B7264-1DE8-4A02-8393-4D94DEBD43D9}.Debug|Any CPU.ActiveCfg = Debug
+		{607B7264-1DE8-4A02-8393-4D94DEBD43D9}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
